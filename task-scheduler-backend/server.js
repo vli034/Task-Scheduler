@@ -1,42 +1,42 @@
 const express = require('express'); 
 const db = require('./config/dbconfig');
+const userRoute = require('./services/Users');
 const app = express(); 
 const port = process.env.PORT || 5000; 
 
 // middleware to help recognize objects as strings and array 
 app.use(express.urlencoded({extended:true})); 
+app.use(express.json());
 
 
-
+app.use('/users', userRoute);
 
 // insert 
-app.post('/insert', (req, res) => { 
-    const q = "INSERT INTO Users (FirstName, LastName) Values ('test', 'ahhh');";
+// app.post('/insert', (req, res) => { 
+//    const q = 'INSERT INTO task_sched_db.Users (FirstName, LastName) Values ("ron", "weasely");';
+//     //const q = 'SELECT * from Users;';
+//     db.connection.query(q, (err,result) =>{
+//         if (err) throw err;
+//         console.log(result);
+//     });
+
     
-    db.query(q, (err, result ,next)=>{
-        if(err) throw err;
-        
-    });
-}); 
+// }); 
 
-// get all users 
-// app.get('/getAllUsers', (req,res) => {
-//     const q = 'SELECT * from Users;';
-//     db.getConnection((error, connection)=>{
-//         if (error) throw error;
-//         connection.query(q, (err,rows)=>{
-//             connection.release(); // return connection to pool
-//             if (err) throw err;
-//             console.log(rows);
-
-//         });
+// app.get('/get', (req,res)=>{
+//     db.connection.query("SELECT * from Users;", (err, result)=>{
+//         if (err) throw err;
+       
+//        res.status(200).send(result);
+//         //console.log(req);
 
 //     });
+
 // });
 
-app.get('/', (req, res)=>{
-    res.send('welcome');
-});
+// app.get('/', (req, res)=>{
+//     res.send('welcome');
+// });
 
 
 // This displays message in terminal that the server running and listening to specified port

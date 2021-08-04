@@ -1,41 +1,49 @@
-const sql = require('../config/dbconfig');
+const {Router} = require('express');
+const db = require('../config/dbconfig');
 
-const User = function(user) {
-    this.firstName = user.firstName;
-    this.lastName = user.lastName;
-}
-sql.connect((err) =>{
-    if (err) throw err;
-    console.log("Succesfully connected to the database");
+const router = Router();
+
+
+// middleware 
+router.use((req, res, next)=>{
+    console.log("Request made to /Users");
+    next();
+
 });
 
-
-User.createUser = (newUser, result) =>{
-    sql.query("INSERT INTO Users (FirstName, LastName) VALUE ('Lucas', 'Test');", newUser , (err, res) =>{
-        if(err){
-            console.log("ERROR: ", err);
-            result(err, null);
-        } else {
-            console.log(res.insertId);
-        }
-
-    });
-
-};
-
-// Customer.create = (newCustomer, result) => {
+router.get('/', (req, res)=> {
+    res.sendStatus(200);
     
-//     sql.query("INSERT INTO customers SET ?", newCustomer, (err, res) => {
-//       if (err) {
-//         console.log("error: ", err);
-//         result(err, null);
-//         return;
-//       }
-  
-//       console.log("created customer: ", { id: res.insertId, ...newCustomer });
-//       result(null, { id: res.insertId, ...newCustomer });
-//     });
-//   };
-  
+});
 
-//   module.exports = Customer;
+// getting all users
+router.get('/all', (req,res)=>{
+
+    db.connection.query('SELECT * FROM Users;', (err, result)=> {
+        if (err) throw err;
+        console.log(result);
+        
+    });
+});
+
+// creating new user 
+router.post('/insert', (req,res)=>{
+    const {FirstName, LastName} = req.query
+    const q = `INSERT INTO Users (FirstName, LastName) VALUES ('${FirstName}', '${LastName}');`;
+
+    if(FirstName && LastName) {        
+        db.connection.query(q, (err, result)=>{
+            if (err) throw err;
+            console.log('success');   
+                  
+        });
+       res.sendStatus(201);
+        //console.log(res.status());
+    } else {
+        console.log('failed');
+        res.sendStatus(500);
+    }
+
+});
+
+module.exports = router;
