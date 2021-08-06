@@ -24,24 +24,27 @@ router.get('/all', (req,res)=>{
         console.log(result);
         
     });
+
+    res.sendStatus(200);
 });
 
 // creating new user 
 router.post('/insert', (req,res)=>{
-    const {FirstName, LastName} = req.query
-    const q = `INSERT INTO Users (FirstName, LastName) VALUES ('${FirstName}', '${LastName}');`;
+    const {firstName, lastName} = req.query
+    const q = `INSERT INTO Users (FirstName, LastName) VALUES ('${firstName}', '${lastName}');`;
 
-    if(FirstName && LastName) {        
+    if(firstName && lastName) {        
         db.connection.query(q, (err, result)=>{
             if (err) throw err;
-            console.log('success');   
+            console.log('success'); 
+            res.sendStatus(201);  
                   
         });
-       res.sendStatus(201);
+       
         //console.log(res.status());
     } else {
         console.log('failed');
-        res.sendStatus(500);
+        res.sendStatus(404);
     }
 
 });
