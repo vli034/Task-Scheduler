@@ -1,20 +1,14 @@
 const mysql = require('mysql');
+const DB_CREDENTIALS = require('./credentials');
 
 // MySQL Connection credentials
 const connection = mysql.createConnection({
-    host: '127.0.0.1',
-    port: '3306',
-    user: 'root',
-    password: 'admin123',
-    database: 'task_sched_db',
-    connectionLimit: 20
+    host: DB_CREDENTIALS.HOST,
+    port: DB_CREDENTIALS.PORT,
+    user: DB_CREDENTIALS.USER,
+    password: DB_CREDENTIALS.PASSWORD,
+    database: DB_CREDENTIALS.DATABASE
 });
-
-// pool.getConnection((err, connection)=>{
-//     if(err) throw err;
-//     console.log("Successfully connected to database");
-
-// });
 
 //Connect to database 
 connection.connect((err) =>{
