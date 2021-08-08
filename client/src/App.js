@@ -1,9 +1,18 @@
-import Header from './components/Header'
+import '@fontsource/roboto';
+import Header from './components/Header';
+import SignUp from './components/SignUp';
+import Login from './components/Login';
+import CreateTask from './components/CreateTask';
+
+
 
 function App() {
   return (
     <div className="container">
-      <Header title={'Task Manager'}/>
+      <CreateTask/> 
+      {/* <Login /> */}
+      {/* <Header /> */}
+      {/* <SignUp /> */}
     </div>
   );
 }
