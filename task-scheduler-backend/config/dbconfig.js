@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const DB_CREDENTIALS = require('./credentials');
 
 // MySQL Connection credentials
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
     host: DB_CREDENTIALS.HOST,
     port: DB_CREDENTIALS.PORT,
     user: DB_CREDENTIALS.USER,
@@ -10,11 +10,16 @@ const connection = mysql.createConnection({
     database: DB_CREDENTIALS.DATABASE
 });
 
-//Connect to database 
-connection.connect((err) =>{
-    if (err) throw err;
-    console.log("Succesfully connected to the database");
+
+connection.on('acquire', function(connection){
+    console.log('connection %d acquired', connection.threadId);
 });
 
-module.exports = {connection};
+connection.on('release', function(connection){
+    console.log('connection %d released', connection.threadId);
+});
+
+
+
+module.exports = connection;
  

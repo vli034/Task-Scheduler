@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const db = require('../config/dbconfig');
+const connection = require('../config/dbconfig');
 const router = Router();
 
 
@@ -11,15 +11,12 @@ router.use((req, res, next)=>{
 });
 
 // getting all users
-router.get('/all', (req,res)=>{
-
-    db.connection.query('SELECT * FROM Users;', (err, result)=> {
-        if (err) throw err;
-        console.log(result);
-        res.sendStatus(200);
-    });
-    
+router.get('/all',  async (req,res)=>{
+    let result = await getAllUsers();
+    res.status(200).json({status: 200, data: result});  
 });
+
+
 
 // inserting new user into db
 router.post('/signup', async (req, res)=>{
@@ -30,16 +27,15 @@ router.post('/signup', async (req, res)=>{
         const newUser = await checkUsername(userName);
         // if result is empty then insert into database
         if(newUser.length == 0){
-            db.connection.query(q,[firstName, lastName, userName, password],(err, result)=>{
+            connection.query(q,[firstName, lastName, userName, password],(err, result)=>{
                 if(err) throw err;
                 console.log('successfully inserted new user into DB');
             });
         } else {
             console.log('UserName is already taken cannot enter into DB');
         }
-        res.sendStatus(200);     
-        //console.log(newUser[0].UserId);
-        //res.status(200).json({result: newUser});    
+       
+        res.status(200);    
     } catch (e){
         console.log('failure' + e);
         res.sendStatus(500);
@@ -74,7 +70,7 @@ const checkUsername = (userName) =>{
     //console.log(userName);
     const q = `SELECT UserName FROM Users WHERE UserName = ?;`;
     return new Promise((resolve, reject) =>{
-        db.connection.query(q, [userName], (error,result) =>{
+        connection.query(q, [userName], (error,result) =>{
             if(error) {
                 console.log(error);
                 return reject(error);
@@ -90,7 +86,7 @@ const checkUsername = (userName) =>{
 const authorizeUser = (userName, password) =>{
     const q = 'SELECT * from Users where UserName = ?  AND Password = ?';
     return new Promise((resolve, reject) =>{
-        db.connection.query(q,[userName, password], (error, result)=>{
+        connection.query(q,[userName, password], (error, result)=>{
             if(error) {
                 console.log(error);
                 return reject(error);
@@ -102,6 +98,17 @@ const authorizeUser = (userName, password) =>{
     });
 };
 
+const getAllUsers = () =>{
+    const q = 'SELECT * from users;';
+    return new Promise((resolve, reject)=>{
+        connection.query(q, (err, result)=> {
+            if(err) return reject(error);
+            return resolve(result);
+
+        })
+    })
+
+};
 
 
 module.exports = router;

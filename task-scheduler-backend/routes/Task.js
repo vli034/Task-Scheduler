@@ -1,5 +1,5 @@
 const {Router} = require('express');
-const db = require('../config/dbconfig');
+const connection= require('../config/dbconfig');
 const router = Router();
 
 // middleware , next executes the midddleware succeeding the current middleware
@@ -10,12 +10,9 @@ router.use((req, res, next)=>{
 });
 
 // get all tasks that have been entered in the db 
-router.get('/all',(req, res)=>{
-    db.connection.query('SELECT * from Tasks;', (err, res)=>{
-        if (err) throw err;
-        console.log(res);
-    });
-    res.sendStatus(200);
+router.get('/all', async (req, res)=>{
+    let result = await getAllTasks();
+    res.status(200).json({status: 200, result: result});  
 });
 
 // insert new tasks 
@@ -49,11 +46,11 @@ router.delete('/delete', async (req, res) =>{
 // update Task critera -- TODO: Neeed to re-work updating logic 
 router.put('/update',async (req, res) =>{
     const {taskId, taskName, taskDescription} = req.query;
-    //console.log(req.query);
+    console.log(req.query);
     try {
-        await updateTask(taskId, taskName, taskDescription);
+        let result = await updateTask(taskId, taskName, taskDescription);
         console.log('successfully updated task');
-        res.sendStatus(200);
+        res.send(result);
     }catch{
         console.log('failed to update task');
         res.sendStatus(500);
@@ -65,7 +62,7 @@ router.put('/update',async (req, res) =>{
 const insertNewTask = (taskName, taskDescription, userId , startDate, endDate) =>{
     const q = 'INSERT INTO Tasks (TaskName, TaskDescription, EndDate, StartDate, UserID) VALUES ( ?, ? , ?, ?, ?);';
     return new Promise((resolve, reject)=>{
-        db.connection.query(q, [taskName, taskDescription, userId , startDate, endDate], (error, result)=>{
+        connection.query(q, [taskName, taskDescription, userId , startDate, endDate], (error, result)=>{
             if (error) {
                 console.log(error);
                 return reject(error);
@@ -82,7 +79,7 @@ const insertNewTask = (taskName, taskDescription, userId , startDate, endDate) =
 const deleteTask = (taskId) =>{
     const  q = 'DELETE FROM Tasks WHERE TaskID= ?;';
     return new Promise((resolve,reject)=>{
-        db.connection.query(q,[taskId], (error,result)=>{
+        connection.query(q,[taskId], (error,result)=>{
             if(error) {
                 console.log(error);
                 return reject(error);
@@ -107,7 +104,7 @@ const updateTask = (taskId, taskName, taskDescription) =>{
     return new Promise((resolve,reject)=>{
         // checks if the user updated both name and description 
         if(taskName && taskDescription){
-            db.connection.query(q,[taskName, taskDescription, taskId], (error, result)=>{
+            connection.query(q,[taskName, taskDescription, taskId], (error, result)=>{
                 if(error){
                     console.log(error);
                     return reject(error);
@@ -117,7 +114,7 @@ const updateTask = (taskId, taskName, taskDescription) =>{
             });
         // check if only provided name change, update task name 
         } else if (taskDescription == ''){
-            db.connection.query(queryTaskName,[taskName, taskId], (error, result)=>{
+            connection.query(queryTaskName,[taskName, taskId], (error, result)=>{
                 if(error){
                     console.log(error);
                     return reject(error);
@@ -126,7 +123,7 @@ const updateTask = (taskId, taskName, taskDescription) =>{
                 return resolve(result);
             });
         } else if (taskName == '') { // if only provided description , update task name
-            db.connection.query(queryTaskDesc,[taskDescription, taskId], (error, result)=>{
+            connection.query(queryTaskDesc,[taskDescription, taskId], (error, result)=>{
                 if(error){
                     console.log(error);
                     return reject(error);
@@ -142,5 +139,17 @@ const updateTask = (taskId, taskName, taskDescription) =>{
     });
 
 };
+
+
+const getAllTasks =() =>{
+    const q = 'SELECT * from Tasks;';
+    return new Promise((resolve, reject)=>{
+        connection.query(q, (err, result)=> {
+            if(err) return reject(error);
+            return resolve(result);
+
+        })
+    })
+}
 
 module.exports = router;
