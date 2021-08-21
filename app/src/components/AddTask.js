@@ -1,25 +1,42 @@
 import { useState } from "react"
 
-const AddTask = () => {
+const AddTask = ({onCreate}) => {
     //default 
     const [text, setText] = useState('')
-    const [day, setDay] = useState('')
+    const [date, setDate] = useState('')
     const [reminder, setReminder] = useState(false)
 
+
+    const onSubmit = (e) =>{
+        e.preventDefault();
+        // form validation 
+        if(!text){
+            alert('Task Name cannot be empty!')
+            return;
+        }
+        // pass the task params 
+        onCreate({text,date, reminder})
+        //clear form
+        setText('')
+        setDate('')
+        setReminder(false)
+
+    }
+
     return (
-        <form className='add-form'>
+        <form className='add-form' onSubmit={onSubmit}>
             <div className='form-control'>
-                <label>Task</label>
+                <label>Task Name</label>
                 <input type='text' placeholder='Add Task' value={text} onChange={(e) => setText(e.target.value)}/> 
             </div>
             <div className='form-control'>
                 <label>Date</label>
-                <input type='text' placeholder='Add Date' value={day} onChange={(e) => setDay(e.target.value)}/>
+                <input type='text' placeholder='Add Date' value={date} onChange={(e) => setDate(e.target.value)}/>
 
             </div>
             <div className='form-control form-control-check'>
                 <label>Set Reminder</label>
-                <input type='checkbox' value={reminder} onChange={(e) => setReminder(e.currentTarget.checked)}/>
+                <input type='checkbox' checked={reminder} value={reminder} onChange={(e) => setReminder(e.currentTarget.checked)}/>
 
             </div>     
             <input className='btn btn-block' type='submit' value='Save Task'/> 
