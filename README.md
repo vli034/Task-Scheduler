@@ -1,6 +1,6 @@
 # Task-Scheduler 📆
 
-A simple SPA that helps with organizing daily tasks! Built in React, Node, Express and MySQL. The objective of this web application is to showcase basic client to server communication using REST API to perfom CRUD functionalities to a database. 
+A simple SPA that helps with organizing daily tasks! Built in React, Node, Express and MySQL. The objective of this web application is to showcase basic client to server communication using REST API to perfom CRUD operations to a database. 
 
 
 # Future Add-ons 📝
