@@ -10,7 +10,7 @@ A simple SPA that helps with organizing daily tasks! Built in React, Node, Expre
 * Adding addtional components such as a Login/Signup page and history of tasks unique to each user.
 
 ### Back-end ### 
-* Planning on migrating my express api to git the newest ESM module standards. 
+* Planning on migrating my express api to fit the newest ESM module standards. 
 * Current DB design is rather simple  -- looking forward to redesiging the DB upon introducing additional components and layers.
 
 
