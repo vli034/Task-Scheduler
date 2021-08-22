@@ -69,7 +69,7 @@ function App() {
             ? { ...task, TaskReminder: selectedTask.TaskReminder }
             : task
         )
-      ); //update state
+      ); 
     }
   };
 
