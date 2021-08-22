@@ -11,6 +11,7 @@ A simple SPA that helps with organizing daily tasks! Built in React, Node, Expre
 
 ### Back-End ### 
 * Planning on migrating my express api to fit the newest ESM module standards. 
+* Adding a properly Logger library i.e: Winston or Morgan to replace console log print statements
 * Current DB design is rather simple  -- looking forward to redesiging the DB upon introducing additional components and layers.
 
 
